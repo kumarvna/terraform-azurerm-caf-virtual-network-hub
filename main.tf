@@ -98,7 +98,7 @@ resource "azurerm_subnet" "fw-snet" {
   name                 = "AzureFirewallSubnet"
   resource_group_name  = local.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = [cidrsubnet(element(var.vnet_address_space, 0), 8, 0)]
+  address_prefixes     = [cidrsubnet(element(var.vnet_address_space, 0), 10, 0)]
   service_endpoints    = var.firewall_service_endpoints
 }
 

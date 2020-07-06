@@ -22,7 +22,7 @@ module "vnet-hub" {
 
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
   vnet_address_space    = ["10.1.0.0/16"]
-  private_dns_zone_name = "publiccloud.tieto.com"
+  private_dns_zone_name = "publiccloud.example.com"
 
   # (Required) To enable Azure Monitoring and flow logs
   # Log Retention in days - Possible values range between 30 and 730
