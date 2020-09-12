@@ -1,7 +1,7 @@
 module "vnet-hub" {
-  //source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  //version = "1.0.0"
-  source = "../"
+  source  = "kumarvna/caf-virtual-network-hub/azurerm"
+  version = "1.0.0"
+
   # By default, this module will create a resource group, proivde the name here
   # to use an existing resource group, specify the existing resource group name, 
   # and set the argument to `create_resource_group = false`. Location will be same as existing RG. 
@@ -10,8 +10,10 @@ module "vnet-hub" {
   hub_vnet_name       = "default-hub"
 
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
-  vnet_address_space    = ["10.1.0.0/16"]
-  private_dns_zone_name = "publiccloud.example.com"
+  vnet_address_space             = ["10.1.0.0/16"]
+  firewall_subnet_address_prefix = ["10.1.0.0/26"]
+  gateway_subnet_address_prefix  = ["10.1.1.0/27"]
+  private_dns_zone_name          = "publiccloud.example.com"
 
   # (Required) To enable Azure Monitoring and flow logs
   # Log Retention in days - Possible values range between 30 and 730

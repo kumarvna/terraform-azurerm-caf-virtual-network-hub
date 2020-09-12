@@ -49,8 +49,10 @@ module "vnet-hub" {
   hub_vnet_name       = "default-hub"
 
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
-  vnet_address_space    = ["10.1.0.0/16"]
-  private_dns_zone_name = "publiccloud.example.com"
+  vnet_address_space             = ["10.1.0.0/16"]
+  firewall_subnet_address_prefix = ["10.1.0.0/26"]
+  gateway_subnet_address_prefix  = ["10.1.1.0/27"]
+  private_dns_zone_name          = "publiccloud.example.com"
 
   # (Required) To enable Azure Monitoring and flow logs
   # Log Retention in days - Possible values range between 30 and 730
@@ -94,9 +96,9 @@ module "vnet-hub" {
         # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
         # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
         # 65200-65335 port to be opened if you planning to create application gateway
-        ["weballow", "100", "Inbound", "Allow", "Tcp", "80", "*", "0.0.0.0/0"],
-        ["weballow1", "200", "Inbound", "Allow", "Tcp", "443", "*", ""],
-        ["weballow1", "300", "Inbound", "Allow", "Tcp", "65200-65335", "*", ""],
+        ["http", "100", "Inbound", "Allow", "Tcp", "80", "*", "0.0.0.0/0"],
+        ["https", "200", "Inbound", "Allow", "Tcp", "443", "*", ""],
+        ["appgwports", "300", "Inbound", "Allow", "Tcp", "65200-65335", "*", ""],
 
       ]
       nsg_outbound_rules = [
@@ -111,6 +113,48 @@ module "vnet-hub" {
   # Availability Zones can only be configured during deployment
   # You can't modify an existing firewall to include Availability Zones
   firewall_zones = [1, 2, 3]
+
+  # (Optional) specify the application rules for Azure Firewall
+  firewall_application_rules = [
+    {
+      name             = "microsoft"
+      action           = "Allow"
+      source_addresses = ["10.0.0.0/8"]
+      target_fqdns     = ["*.microsoft.com"]
+      protocol = {
+        type = "Http"
+        port = "80"
+      }
+    },
+  ]
+
+  # (Optional) specify the Network rules for Azure Firewall
+  firewall_network_rules = [
+    {
+      name                  = "ntp"
+      action                = "Allow"
+      source_addresses      = ["10.0.0.0/8"]
+      destination_ports     = ["123"]
+      destination_addresses = ["*"]
+      protocols             = ["UDP"]
+    },
+  ]
+
+  # (Optional) specify the NAT rules for Azure Firewall
+  # Destination address must be Firewall public IP
+  # `fw-public` is a variable value and automatically pick the firewall public IP from module.
+  firewall_nat_rules = [
+    {
+      name                  = "testrule"
+      action                = "Dnat"
+      source_addresses      = ["10.0.0.0/8"]
+      destination_ports     = ["53", ]
+      destination_addresses = ["fw-public"]
+      translated_port       = 53
+      translated_address    = "8.8.8.8"
+      protocols             = ["TCP", "UDP", ]
+    },
+  ]
 
   # Adding TAG's to your Azure resources (Required)
   # ProjectName and Env are already declared above, to use them here, create a varible.
@@ -146,7 +190,7 @@ This module creates 4 subnets by default: Gateway Subnet, AzureFirewallSubnet, A
 
 Name | Description
 ---- | -----------
-Gateway Subnet| Contain VPN Gateway, Express route Gateway
+GatewaySubnet| Contain VPN Gateway, Express route Gateway
 AzureFirewallSubnet|If added the Firewall module, it Deploys an Azure Firewall that will monitor all incoming and outgoing traffic
 ApplicationGateway|This subnet contain an Application Gateway and any other DMZ services
 Management|Management subnet for Bastion host, accessible from gateway
@@ -332,6 +376,7 @@ Azure Firewall can be configured during deployment to span multiple Availability
 To specifies the availability zones in which the Azure Firewall should be created, set the argument `firewall_zones = [1, 2, 3]`.  This is by default is not enabled and set to `none`. There's no additional cost for a firewall deployed in an Availability Zone. However, there are additional costs for inbound and outbound data transfers associated with Availability Zones.
 
 >Note: Availability Zones can only be configured during deployment. You can't modify an existing firewall to include Availability Zones
+
 >### Firewall Rules
 
 This module centrally create allow or deny network filtering rules by source and destination IP address, port, and protocol. Azure Firewall is fully stateful, so it can distinguish legitimate packets for different types of connections. Rules are enforced and logged across multiple subscriptions and virtual networks.
@@ -380,7 +425,7 @@ module "vnet-hub" {
       action                = "Dnat"
       source_addresses      = ["10.0.0.0/8"]
       destination_ports     = ["53", ]
-      destination_addresses = "fw-public"
+      destination_addresses = ["fw-public"]
       translated_port       = 53
       translated_address    = "8.8.8.8"
       protocols             = ["TCP", "UDP", ]
@@ -469,7 +514,9 @@ Name | Description | Type | Default
 `dns_servers` | List of DNS servers to use for virtual network | list |`[]`
 `subnets`|For each subnet, create an object that contain fields|object|`{}`
 `subnet_name`|A name of subnets inside virtual network| object |`{}`
-`subnet_address_prefix`|A list of subnets address prefixes inside virtual network|
+`subnet_address_prefix`|A list of subnets address prefixes inside virtual network|list|`[]`
+`gateway_subnet_address_prefix`|The address prefix to use for the gateway subnet|list|`null`
+`firewall_subnet_address_prefix`|The address prefix to use for the Firewall subnet|list|`[]`
 `delegation`|defines a subnet delegation feature. takes an object as described in the following example|object|`{}`
 `service_endpoints`|service endpoints for the virtual subnet|object|`{}`
 `nsg_inbound_rule`|network security groups settings - a NSG is always created for each subnet|object|`{}`

@@ -83,6 +83,16 @@ variable "public_ip_names" {
   default     = ["fw-public"]
 }
 
+variable "gateway_subnet_address_prefix" {
+  description = "The address prefix to use for the gateway subnet"
+  default     = null
+}
+
+variable "firewall_subnet_address_prefix" {
+  description = "The address prefix to use for the Firewall subnet"
+  default     = []
+}
+
 variable "firewall_zones" {
   description = "A collection of availability zones to spread the Firewall over"
   type        = list(string)
@@ -114,7 +124,7 @@ variable "fw_pip_diag_logs" {
 
 variable "fw_diag_logs" {
   description = "Firewall Monitoring Category details for Azure Diagnostic setting"
-  default     = ["AzureFirewallApplicationRule", "AzureFirewallNetworkRule"]
+  default     = ["AzureFirewallApplicationRule", "AzureFirewallNetworkRule", "AzureFirewallDnsProxy"]
 }
 
 variable "tags" {

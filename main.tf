@@ -98,15 +98,16 @@ resource "azurerm_subnet" "fw-snet" {
   name                 = "AzureFirewallSubnet"
   resource_group_name  = local.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = [cidrsubnet(element(var.vnet_address_space, 0), 10, 0)]
+  address_prefixes     = var.firewall_subnet_address_prefix #[cidrsubnet(element(var.vnet_address_space, 0), 10, 0)]
   service_endpoints    = var.firewall_service_endpoints
 }
 
 resource "azurerm_subnet" "gw_snet" {
-  name                 = lower(format("snet-%s-${var.hub_vnet_name}-${local.location}", "gateway"))
+  count                = var.gateway_subnet_address_prefix != null ? 1 : 0
+  name                 = "GatewaySubnet"
   resource_group_name  = local.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = [cidrsubnet(element(var.vnet_address_space, 0), 8, 1)]
+  address_prefixes     = var.gateway_subnet_address_prefix #[cidrsubnet(element(var.vnet_address_space, 0), 8, 1)]
   service_endpoints    = ["Microsoft.Storage"]
 }
 

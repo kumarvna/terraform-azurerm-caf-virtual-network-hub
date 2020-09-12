@@ -21,8 +21,10 @@ module "vnet-hub" {
   hub_vnet_name       = "default-hub"
 
   # Provide valid VNet Address space and specify valid domain name for Private DNS Zone.  
-  vnet_address_space    = ["10.1.0.0/16"]
-  private_dns_zone_name = "publiccloud.example.com"
+  vnet_address_space             = ["10.1.0.0/16"]
+  firewall_subnet_address_prefix = ["10.1.0.0/26"]
+  gateway_subnet_address_prefix  = ["10.1.1.0/27"]
+  private_dns_zone_name          = "publiccloud.example.com"
 
   # (Required) To enable Azure Monitoring and flow logs
   # Log Retention in days - Possible values range between 30 and 730
@@ -66,9 +68,9 @@ module "vnet-hub" {
         # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
         # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
         # 65200-65335 port to be opened if you planning to create application gateway
-        ["weballow", "100", "Inbound", "Allow", "Tcp", "80", "*", "0.0.0.0/0"],
-        ["weballow1", "200", "Inbound", "Allow", "Tcp", "443", "*", ""],
-        ["weballow1", "300", "Inbound", "Allow", "Tcp", "65200-65335", "*", ""],
+        ["http", "100", "Inbound", "Allow", "Tcp", "80", "*", "0.0.0.0/0"],
+        ["https", "200", "Inbound", "Allow", "Tcp", "443", "*", ""],
+        ["appgwports", "300", "Inbound", "Allow", "Tcp", "65200-65335", "*", ""],
 
       ]
       nsg_outbound_rules = [
@@ -119,7 +121,7 @@ module "vnet-hub" {
       action                = "Dnat"
       source_addresses      = ["10.0.0.0/8"]
       destination_ports     = ["53", ]
-      destination_addresses = "fw-public"
+      destination_addresses = ["fw-public"]
       translated_port       = 53
       translated_address    = "8.8.8.8"
       protocols             = ["TCP", "UDP", ]
