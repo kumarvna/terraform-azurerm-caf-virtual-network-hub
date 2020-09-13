@@ -1,7 +1,7 @@
 module "vnet-hub" {
-  source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "1.0.0"
-
+  // source  = "kumarvna/caf-virtual-network-hub/azurerm"
+  // version = "1.0.0"
+  source = "../../"
   # By default, this module will create a resource group, proivde the name here
   # to use an existing resource group, specify the existing resource group name, 
   # and set the argument to `create_resource_group = false`. Location will be same as existing RG. 
