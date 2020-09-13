@@ -443,33 +443,6 @@ resource "azurerm_monitor_diagnostic_setting" "nsg" {
   }
 }
 
-resource "azurerm_monitor_diagnostic_setting" "fw-pip" {
-  for_each                   = local.public_ip_map
-  name                       = "${each.key}-pip-diag"
-  target_resource_id         = azurerm_public_ip.fw-pip[each.key].id
-  storage_account_id         = azurerm_storage_account.storeacc.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.logws.id
-
-  dynamic "log" {
-    for_each = var.fw_pip_diag_logs
-    content {
-      category = log.value
-      enabled  = true
-
-      retention_policy {
-        enabled = false
-      }
-    }
-  }
-
-  metric {
-    category = "AllMetrics"
-
-    retention_policy {
-      enabled = false
-    }
-  }
-}
 
 resource "azurerm_monitor_diagnostic_setting" "fw-diag" {
   name                       = lower("fw-${var.hub_vnet_name}-diag")
