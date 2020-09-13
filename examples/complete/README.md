@@ -11,7 +11,7 @@ This is designed to quickly deploy hub and spoke architecture in the azure and f
 ``` hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "1.0.0"
+  version = "2.0.0"
 
   # By default, this module will create a resource group, proivde the name here
   # to use an existing resource group, specify the existing resource group name,
@@ -49,14 +49,14 @@ module "vnet-hub" {
       nsg_inbound_rules = [
         # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
         # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["weballow", "100", "Inbound", "Allow", "Tcp", "22", "*", ""],
-        ["weballow1", "200", "Inbound", "Allow", "Tcp", "3389", "*", ""],
+        ["ssh", "100", "Inbound", "Allow", "Tcp", "22", "*", ""],
+        ["rdp", "200", "Inbound", "Allow", "Tcp", "3389", "*", ""],
       ]
 
       nsg_outbound_rules = [
         # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
         # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["ntp_out", "100", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
+        ["ntp_out", "300", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
       ]
     }
 
@@ -76,7 +76,7 @@ module "vnet-hub" {
       nsg_outbound_rules = [
         # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
         # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["ntp_out", "100", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
+        ["ntp_out", "400", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
       ]
     }
   }

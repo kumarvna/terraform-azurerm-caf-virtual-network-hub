@@ -8,7 +8,7 @@ AzureFirewallSubnet and GatewaySubnet will not contain any UDR (User Defined Rou
 
 This is designed to quickly deploy hub and spoke architecture in the azure and further security hardening would be recommend to add appropriate NSG rules to use this for any production workloads.
 
-![hub-spoke-topology](https://github.com/kumarvna/terraform-azurerm-caf-virtual-network-hub/blob/master/azure-caf-hub-spoke-firewall.png)
+![hub-spoke-topology](azure-caf-hub-spoke-firewall.png)
 
 Source: [Microsoft Azure Hub-Spoke Topology Documentation](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/hub-spoke)
 
@@ -39,7 +39,7 @@ These types of resources are supported:
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "1.0.0"
+  version = "2.0.0"
 
   # By default, this module will create a resource group, proivde the name here
   # to use an existing resource group, specify the existing resource group name,
@@ -77,14 +77,14 @@ module "vnet-hub" {
       nsg_inbound_rules = [
         # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
         # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["weballow", "100", "Inbound", "Allow", "Tcp", "22", "*", ""],
-        ["weballow1", "200", "Inbound", "Allow", "Tcp", "3389", "*", ""],
+        ["ssh", "100", "Inbound", "Allow", "Tcp", "22", "*", ""],
+        ["rdp", "200", "Inbound", "Allow", "Tcp", "3389", "*", ""],
       ]
 
       nsg_outbound_rules = [
         # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
         # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["ntp_out", "100", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
+        ["ntp_out", "300", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
       ]
     }
 
@@ -104,7 +104,7 @@ module "vnet-hub" {
       nsg_outbound_rules = [
         # [name, priority, direction, access, protocol, destination_port_range, source_address_prefix, destination_address_prefix]
         # To use defaults, use "" without adding any value and to use this subnet as a source or destination prefix.
-        ["ntp_out", "100", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
+        ["ntp_out", "400", "Outbound", "Allow", "Udp", "123", "", "0.0.0.0/0"],
       ]
     }
   }
@@ -206,7 +206,7 @@ This module supports enabling the service endpoint of your choosing under the vi
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "1.0.0"
+  version = "2.0.0"
 
   # .... omitted
 
@@ -234,7 +234,7 @@ This module supports enabling the service delegation of your choosing under the 
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "1.0.0"
+  version = "2.0.0"
 
   # .... omitted
 
@@ -268,7 +268,7 @@ This module Enable or Disable network policies for the private link endpoint on 
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "1.0.0"
+  version = "2.0.0"
 
   # .... omitted
 
@@ -298,7 +298,7 @@ This module Enable or Disable network policies for the private link service on t
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "1.0.0"
+  version = "2.0.0"
 
   # .... omitted
 
@@ -330,7 +330,7 @@ In the Source and Destination columns, `VirtualNetwork`, `AzureLoadBalancer`, an
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "1.0.0"
+  version = "2.0.0"
 
   # .... omitted
   
@@ -386,7 +386,7 @@ To define the firewall rules, use the input variables `firewall_application_rule
 ``` hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "1.0.0"
+  version = "2.0.0"
 
 # ....omitted
 
@@ -486,7 +486,7 @@ End Date of the Project|Date when this application, workload, or service is plan
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "1.0.0"
+  version = "2.0.0"
   create_resource_group   = true
 
   # ... omitted
@@ -570,7 +570,7 @@ Name | Description
 
 ## Authors
 
-Module is maintained by [Kumaraswamy Vithanala](mailto:kumarvna@gmail.com) with the help from other awesome contributors.
+Originally created by [Kumaraswamy Vithanala](mailto:kumarvna@gmail.com)
 
 ## Other resources
 
