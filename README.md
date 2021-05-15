@@ -39,7 +39,7 @@ These types of resources are supported:
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.0.0"
+  version = "2.1.0"
 
   # By default, this module will create a resource group, proivde the name here
   # to use an existing resource group, specify the existing resource group name,
@@ -206,7 +206,7 @@ This module supports enabling the service endpoint of your choosing under the vi
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.0.0"
+  version = "2.1.0"
 
   # .... omitted
 
@@ -234,7 +234,7 @@ This module supports enabling the service delegation of your choosing under the 
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.0.0"
+  version = "2.1.0"
 
   # .... omitted
 
@@ -268,7 +268,7 @@ This module Enable or Disable network policies for the private link endpoint on 
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.0.0"
+  version = "2.1.0"
 
   # .... omitted
 
@@ -298,7 +298,7 @@ This module Enable or Disable network policies for the private link service on t
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.0.0"
+  version = "2.1.0"
 
   # .... omitted
 
@@ -330,7 +330,7 @@ In the Source and Destination columns, `VirtualNetwork`, `AzureLoadBalancer`, an
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.0.0"
+  version = "2.1.0"
 
   # .... omitted
   
@@ -386,7 +386,7 @@ To define the firewall rules, use the input variables `firewall_application_rule
 ``` hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.0.0"
+  version = "2.1.0"
 
 # ....omitted
 
@@ -486,7 +486,7 @@ End Date of the Project|Date when this application, workload, or service is plan
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.0.0"
+  version = "2.1.0"
   create_resource_group   = true
 
   # ... omitted
