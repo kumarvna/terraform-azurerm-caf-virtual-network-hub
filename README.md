@@ -506,14 +506,14 @@ module "vnet-hub" {
 Name | Version
 -----|--------
 terraform | >= 0.13
-azurerm | ~> 2.27
+azurerm | >= 2.59.0
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-azurerm | ~> 2.27
-random | n/a
+azurerm | >= 2.59.0
+random | >= 3.1.0
 
 ## Inputs
 
