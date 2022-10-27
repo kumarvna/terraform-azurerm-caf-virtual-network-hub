@@ -37,13 +37,18 @@ These types of resources are supported:
 ## Module Usage
 
 ```hcl
+# Azurerm provider configuration
+provider "azurerm" {
+  features {}
+}
+
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # By default, this module will create a resource group, proivde the name here
-  # to use an existing resource group, specify the existing resource group name,
-  # and set the argument to `create_resource_group = false`. Location will be same as existing RG.
+  # to use an existing resource group, specify the existing resource group name, 
+  # and set the argument to `create_resource_group = false`. Location will be same as existing RG. 
   resource_group_name = "rg-hub-demo-internal-shared-westeurope-001"
   location            = "westeurope"
   hub_vnet_name       = "default-hub"
@@ -65,7 +70,7 @@ module "vnet-hub" {
   # Multiple Subnets, Service delegation, Service Endpoints, Network security groups
   # These are default subnets with required configuration, check README.md for more details
   # NSG association to be added automatically for all subnets listed here.
-  # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets.
+  # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets. 
   # ex.: For 10.1.0.0/16 address space, usable address range start from 10.1.2.0/24 for all subnets.
   # subnet name will be set as per Azure naming convention by defaut. expected value here is: <App or project name>
   subnets = {
@@ -109,8 +114,8 @@ module "vnet-hub" {
     }
   }
 
-  # (Optional) To enable the availability zones for firewall.
-  # Availability Zones can only be configured during deployment
+  # (Optional) To enable the availability zones for firewall. 
+  # Availability Zones can only be configured during deployment 
   # You can't modify an existing firewall to include Availability Zones
   firewall_zones = [1, 2, 3]
 
@@ -157,7 +162,7 @@ module "vnet-hub" {
   ]
 
   # Adding TAG's to your Azure resources (Required)
-  # ProjectName and Env are already declared above, to use them here, create a varible.
+  # ProjectName and Env are already declared above, to use them here, create a varible. 
   tags = {
     ProjectName  = "demo-internal"
     Env          = "dev"
@@ -206,7 +211,7 @@ This module supports enabling the service endpoint of your choosing under the vi
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # .... omitted
 
@@ -234,7 +239,7 @@ This module supports enabling the service delegation of your choosing under the 
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # .... omitted
 
@@ -259,16 +264,16 @@ module "vnet-hub" {
 }
 ```
 
-## `enforce_private_link_endpoint_network_policies` - Private Link Endpoint on the subnet
+## `private_endpoint_network_policies_enabled` - Private Link Endpoint on the subnet
 
-Network policies, like network security groups (NSG), are not supported for Private Link Endpoints. In order to deploy a Private Link Endpoint on a given subnet, you must set the `enforce_private_link_endpoint_network_policies` attribute to `true`. This setting is only applicable for the Private Link Endpoint, for all other resources in the subnet access is controlled based via the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
+Network policies, like network security groups (NSG), are not supported for Private Link Endpoints. In order to deploy a Private Link Endpoint on a given subnet, you must set the `private_endpoint_network_policies_enabled` attribute to `true`. This setting is only applicable for the Private Link Endpoint, for all other resources in the subnet access is controlled based via the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
 
 This module Enable or Disable network policies for the private link endpoint on the subnet. The default value is `false`. If you are enabling the Private Link Endpoints on the subnet you shouldn't use Private Link Services as it's conflicts.
 
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # .... omitted
 
@@ -277,7 +282,7 @@ module "vnet-hub" {
     mgnt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
-      enforce_private_link_endpoint_network_policies = true
+      private_endpoint_network_policies_enabled = true
 
         }
       }
@@ -289,16 +294,16 @@ module "vnet-hub" {
 }
 ```
 
-## `enforce_private_link_service_network_policies` - private link service on the subnet
+## `private_link_service_network_policies_enabled` - private link service on the subnet
 
-In order to deploy a Private Link Service on a given subnet, you must set the `enforce_private_link_service_network_policies` attribute to `true`. This setting is only applicable for the Private Link Service, for all other resources in the subnet access is controlled based on the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
+In order to deploy a Private Link Service on a given subnet, you must set the `private_link_service_network_policies_enabled` attribute to `true`. This setting is only applicable for the Private Link Service, for all other resources in the subnet access is controlled based on the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
 
 This module Enable or Disable network policies for the private link service on the subnet. The default value is `false`. If you are enabling the Private Link service on the subnet then, you shouldn't use Private Link endpoints as it's conflicts.
 
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # .... omitted
 
@@ -307,7 +312,7 @@ module "vnet-hub" {
     mgnt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
-      enforce_private_link_service_network_policies = true
+      private_link_service_network_policies_enabled = true
 
         }
       }
@@ -330,7 +335,7 @@ In the Source and Destination columns, `VirtualNetwork`, `AzureLoadBalancer`, an
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # .... omitted
   
@@ -386,7 +391,7 @@ To define the firewall rules, use the input variables `firewall_application_rule
 ``` hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
 # ....omitted
 
@@ -486,7 +491,7 @@ End Date of the Project|Date when this application, workload, or service is plan
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
   create_resource_group   = true
 
   # ... omitted
