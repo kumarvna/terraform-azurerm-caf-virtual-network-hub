@@ -93,7 +93,7 @@ variable "sku_name" {
 variable "sku_tier" {
   description = "SKU tier of the Firewall. Possible values are `Premium`, `Standard` and `Basic`"
   type        = string
-  default     = "Basic"
+  default     = "Standard"
 }
 
 variable "firewall_zones" {
