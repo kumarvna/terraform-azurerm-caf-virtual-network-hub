@@ -108,7 +108,7 @@ resource "azurerm_subnet" "gw_snet" {
   resource_group_name  = local.resource_group_name
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = var.gateway_subnet_address_prefix #[cidrsubnet(element(var.vnet_address_space, 0), 8, 1)]
-  service_endpoints    = ["Microsoft.Storage"]
+  service_endpoints    = var.gateway_service_endpoints
 }
 
 resource "azurerm_subnet" "snet" {
@@ -119,8 +119,8 @@ resource "azurerm_subnet" "snet" {
   address_prefixes     = each.value.subnet_address_prefix
   service_endpoints    = lookup(each.value, "service_endpoints", [])
   # Applicable to the subnets which used for Private link endpoints or services 
-  enforce_private_link_endpoint_network_policies = lookup(each.value, "enforce_private_link_endpoint_network_policies", null)
-  enforce_private_link_service_network_policies  = lookup(each.value, "enforce_private_link_service_network_policies", null)
+  private_endpoint_network_policies_enabled     = lookup(each.value, "private_endpoint_network_policies_enabled", null)
+  private_link_service_network_policies_enabled = lookup(each.value, "private_link_service_network_policies_enabled", null)
 
   dynamic "delegation" {
     for_each = lookup(each.value, "delegation", {}) != {} ? [1] : []
@@ -267,6 +267,8 @@ resource "azurerm_firewall" "fw" {
   name                = lower("fw-${var.hub_vnet_name}-${local.location}")
   location            = local.location
   resource_group_name = local.resource_group_name
+  sku_name            = var.sku_name
+  sku_tier            = var.sku_tier
   zones               = var.firewall_zones
   tags                = merge({ "ResourceName" = lower("fw-${var.hub_vnet_name}-${local.location}") }, var.tags, )
   dynamic "ip_configuration" {
@@ -378,6 +380,7 @@ resource "azurerm_log_analytics_workspace" "logws" {
 #-----------------------------------------
 resource "azurerm_network_watcher_flow_log" "nwflog" {
   for_each                  = var.subnets
+  name                      = lower("${azurerm_network_watcher.nwatcher[0].name}-flow-log")
   network_watcher_name      = azurerm_network_watcher.nwatcher[0].name
   resource_group_name       = azurerm_resource_group.nwatcher[0].name # Must provide Netwatcher resource Group
   network_security_group_id = azurerm_network_security_group.nsg[each.key].id
