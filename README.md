@@ -8,7 +8,7 @@ AzureFirewallSubnet and GatewaySubnet will not contain any UDR (User Defined Rou
 
 This is designed to quickly deploy hub and spoke architecture in the azure and further security hardening would be recommend to add appropriate NSG rules to use this for any production workloads.
 
-![hub-spoke-topology](azure-caf-hub-spoke-firewall.png)
+![hub-spoke-topology](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/images/hub-spoke.png)
 
 Source: [Microsoft Azure Hub-Spoke Topology Documentation](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/hub-spoke)
 
@@ -37,13 +37,18 @@ These types of resources are supported:
 ## Module Usage
 
 ```hcl
+# Azurerm provider configuration
+provider "azurerm" {
+  features {}
+}
+
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # By default, this module will create a resource group, proivde the name here
-  # to use an existing resource group, specify the existing resource group name,
-  # and set the argument to `create_resource_group = false`. Location will be same as existing RG.
+  # to use an existing resource group, specify the existing resource group name, 
+  # and set the argument to `create_resource_group = false`. Location will be same as existing RG. 
   resource_group_name = "rg-hub-demo-internal-shared-westeurope-001"
   location            = "westeurope"
   hub_vnet_name       = "default-hub"
@@ -65,7 +70,7 @@ module "vnet-hub" {
   # Multiple Subnets, Service delegation, Service Endpoints, Network security groups
   # These are default subnets with required configuration, check README.md for more details
   # NSG association to be added automatically for all subnets listed here.
-  # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets.
+  # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets. 
   # ex.: For 10.1.0.0/16 address space, usable address range start from 10.1.2.0/24 for all subnets.
   # subnet name will be set as per Azure naming convention by defaut. expected value here is: <App or project name>
   subnets = {
@@ -109,8 +114,8 @@ module "vnet-hub" {
     }
   }
 
-  # (Optional) To enable the availability zones for firewall.
-  # Availability Zones can only be configured during deployment
+  # (Optional) To enable the availability zones for firewall. 
+  # Availability Zones can only be configured during deployment 
   # You can't modify an existing firewall to include Availability Zones
   firewall_zones = [1, 2, 3]
 
@@ -157,7 +162,7 @@ module "vnet-hub" {
   ]
 
   # Adding TAG's to your Azure resources (Required)
-  # ProjectName and Env are already declared above, to use them here, create a varible.
+  # ProjectName and Env are already declared above, to use them here, create a varible. 
   tags = {
     ProjectName  = "demo-internal"
     Env          = "dev"
@@ -206,7 +211,7 @@ This module supports enabling the service endpoint of your choosing under the vi
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # .... omitted
 
@@ -234,7 +239,7 @@ This module supports enabling the service delegation of your choosing under the 
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # .... omitted
 
@@ -259,16 +264,16 @@ module "vnet-hub" {
 }
 ```
 
-## `enforce_private_link_endpoint_network_policies` - Private Link Endpoint on the subnet
+## `private_endpoint_network_policies_enabled` - Private Link Endpoint on the subnet
 
-Network policies, like network security groups (NSG), are not supported for Private Link Endpoints. In order to deploy a Private Link Endpoint on a given subnet, you must set the `enforce_private_link_endpoint_network_policies` attribute to `true`. This setting is only applicable for the Private Link Endpoint, for all other resources in the subnet access is controlled based via the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
+Network policies, like network security groups (NSG), are not supported for Private Link Endpoints. In order to deploy a Private Link Endpoint on a given subnet, you must set the `private_endpoint_network_policies_enabled` attribute to `true`. This setting is only applicable for the Private Link Endpoint, for all other resources in the subnet access is controlled based via the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
 
 This module Enable or Disable network policies for the private link endpoint on the subnet. The default value is `false`. If you are enabling the Private Link Endpoints on the subnet you shouldn't use Private Link Services as it's conflicts.
 
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # .... omitted
 
@@ -277,7 +282,7 @@ module "vnet-hub" {
     mgnt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
-      enforce_private_link_endpoint_network_policies = true
+      private_endpoint_network_policies_enabled = true
 
         }
       }
@@ -289,16 +294,16 @@ module "vnet-hub" {
 }
 ```
 
-## `enforce_private_link_service_network_policies` - private link service on the subnet
+## `private_link_service_network_policies_enabled` - private link service on the subnet
 
-In order to deploy a Private Link Service on a given subnet, you must set the `enforce_private_link_service_network_policies` attribute to `true`. This setting is only applicable for the Private Link Service, for all other resources in the subnet access is controlled based on the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
+In order to deploy a Private Link Service on a given subnet, you must set the `private_link_service_network_policies_enabled` attribute to `true`. This setting is only applicable for the Private Link Service, for all other resources in the subnet access is controlled based on the Network Security Group which can be configured using the `azurerm_subnet_network_security_group_association` resource.
 
 This module Enable or Disable network policies for the private link service on the subnet. The default value is `false`. If you are enabling the Private Link service on the subnet then, you shouldn't use Private Link endpoints as it's conflicts.
 
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # .... omitted
 
@@ -307,7 +312,7 @@ module "vnet-hub" {
     mgnt_subnet = {
       subnet_name           = "management"
       subnet_address_prefix = "10.1.2.0/24"
-      enforce_private_link_service_network_policies = true
+      private_link_service_network_policies_enabled = true
 
         }
       }
@@ -330,7 +335,7 @@ In the Source and Destination columns, `VirtualNetwork`, `AzureLoadBalancer`, an
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # .... omitted
   
@@ -386,7 +391,7 @@ To define the firewall rules, use the input variables `firewall_application_rule
 ``` hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
 # ....omitted
 
@@ -486,7 +491,7 @@ End Date of the Project|Date when this application, workload, or service is plan
 ```hcl
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
   create_resource_group   = true
 
   # ... omitted
@@ -505,14 +510,14 @@ module "vnet-hub" {
 
 Name | Version
 -----|--------
-terraform | >= 0.13
-azurerm | >= 2.59.0
+terraform | >= 1.1.9
+azurerm | >= 3.28.0
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-azurerm | >= 2.59.0
+azurerm | >= 3.28.0
 random | >= 3.1.0
 
 ## Inputs
@@ -529,20 +534,24 @@ Name | Description | Type | Default
 `subnets`|For each subnet, create an object that contain fields|object|`{}`
 `subnet_name`|A name of subnets inside virtual network| object |`{}`
 `subnet_address_prefix`|A list of subnets address prefixes inside virtual network|list|`[]`
-`gateway_subnet_address_prefix`|The address prefix to use for the gateway subnet|list|`null`
-`firewall_subnet_address_prefix`|The address prefix to use for the Firewall subnet|list|`[]`
 `delegation`|defines a subnet delegation feature. takes an object as described in the following example|object|`{}`
 `service_endpoints`|service endpoints for the virtual subnet|object|`{}`
 `nsg_inbound_rule`|network security groups settings - a NSG is always created for each subnet|object|`{}`
 `nsg_outbound_rule`|network security groups settings - a NSG is always created for each subnet|object|`{}`
+`gateway_subnet_address_prefix`|The address prefix to use for the gateway subnet|list|`null`
+`firewall_subnet_address_prefix`|The address prefix to use for the Firewall subnet|list|`[]`
+`firewall_service_endpoints`|Service endpoints to add to the firewall subnet|list|`"Microsoft.AzureActiveDirectory", "Microsoft.AzureCosmosDB","Microsoft.EventHub", "Microsoft.KeyVault", "Microsoft.ServiceBus", "Microsoft.Sql", "Microsoft.Storage",`
+`gateway_service_endpoints`|Service endpoints to add to the Gateway subnet|list|`[]`
 `private_dns_zone_name`|The name of the Private DNS Zone. Must be a valid domain name to enable the resource creation|string|`""`
-`log_analytics_workspace_sku`|The SKU of the Log Analytics Workspace. Possible values are `Free`, `PerNode`, `Premium`, `Standard`, `Standalone`, `Unlimited`, and `PerGB2018`|string|`PerGB2018`
-`log_analytics_logs_retention_in_days`|The log analytics workspace data retention in days. Possible values range between `30` and `730`|number|`30`
 `public_ip_names`|Public IPs is a list of IP names that are connected to the firewall|list(string)|["fw-public"]
 `firewall_zones`|A collection of availability zones to spread the Firewall over|list(string)| `null`
 `firewall_application_rules`|List of network rules to apply to firewall|list|`[]`
 `firewall_nat_rules`|List of NAT rules to apply to firewall|list|`[]`
 `firewall_network_rules`|List of network rules to apply to firewall|list|`[]`
+`sku_name`|SKU name of the Firewall. Possible values are `AZFW_Hub` and `AZFW_VNet`|string|`"AZFW_VNet"`
+`sku_tier`|SKU tier of the Firewall. Possible values are `Premium`, `Standard` and `Basic`|string|`"Standard"`
+`log_analytics_workspace_sku`|The SKU of the Log Analytics Workspace. Possible values are `Free`, `PerNode`, `Premium`, `Standard`,`Standalone`, `Unlimited`, and `PerGB2018`|string|`PerGB2018`
+`log_analytics_logs_retention_in_days`|The log analytics workspace data retention in days. Possible values range between `30` and `730`|number|`30`
 `Tags`|A map of tags to add to all resources|map|`{}`
 
 ## Outputs

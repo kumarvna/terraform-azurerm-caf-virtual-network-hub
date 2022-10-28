@@ -9,13 +9,18 @@ This is designed to quickly deploy hub and spoke architecture in the azure and f
 ## Module Usage
 
 ``` hcl
+# Azurerm provider configuration
+provider "azurerm" {
+  features {}
+}
+
 module "vnet-hub" {
   source  = "kumarvna/caf-virtual-network-hub/azurerm"
-  version = "2.1.0"
+  version = "2.2.0"
 
   # By default, this module will create a resource group, proivde the name here
-  # to use an existing resource group, specify the existing resource group name,
-  # and set the argument to `create_resource_group = false`. Location will be same as existing RG.
+  # to use an existing resource group, specify the existing resource group name, 
+  # and set the argument to `create_resource_group = false`. Location will be same as existing RG. 
   resource_group_name = "rg-hub-demo-internal-shared-westeurope-001"
   location            = "westeurope"
   hub_vnet_name       = "default-hub"
@@ -37,7 +42,7 @@ module "vnet-hub" {
   # Multiple Subnets, Service delegation, Service Endpoints, Network security groups
   # These are default subnets with required configuration, check README.md for more details
   # NSG association to be added automatically for all subnets listed here.
-  # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets.
+  # First two address ranges from VNet Address space reserved for Gateway And Firewall Subnets. 
   # ex.: For 10.1.0.0/16 address space, usable address range start from 10.1.2.0/24 for all subnets.
   # subnet name will be set as per Azure naming convention by defaut. expected value here is: <App or project name>
   subnets = {
@@ -81,8 +86,8 @@ module "vnet-hub" {
     }
   }
 
-  # (Optional) To enable the availability zones for firewall.
-  # Availability Zones can only be configured during deployment
+  # (Optional) To enable the availability zones for firewall. 
+  # Availability Zones can only be configured during deployment 
   # You can't modify an existing firewall to include Availability Zones
   firewall_zones = [1, 2, 3]
 
@@ -129,7 +134,7 @@ module "vnet-hub" {
   ]
 
   # Adding TAG's to your Azure resources (Required)
-  # ProjectName and Env are already declared above, to use them here, create a varible.
+  # ProjectName and Env are already declared above, to use them here, create a varible. 
   tags = {
     ProjectName  = "demo-internal"
     Env          = "dev"

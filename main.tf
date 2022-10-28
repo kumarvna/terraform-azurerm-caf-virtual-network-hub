@@ -345,7 +345,7 @@ resource "azurerm_firewall_nat_rule_collection" "fw" {
 # Storage Account for Logs Archive
 #-----------------------------------------------
 resource "azurerm_storage_account" "storeacc" {
-  name                      = format("stdiaglogs%s", lower(replace(var.hub_vnet_name, "/[[:^alnum:]]/", "")))
+  name                      = format("stdiaglogs%s", lower(replace("${random_string.main.result}", "/[[:^alnum:]]/", "")))
   resource_group_name       = local.resource_group_name
   location                  = local.location
   account_kind              = "StorageV2"
