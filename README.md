@@ -510,14 +510,14 @@ module "vnet-hub" {
 
 Name | Version
 -----|--------
-terraform | >= 0.13
-azurerm | >= 2.59.0
+terraform | >= 1.1.9
+azurerm | >= 3.28.0
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-azurerm | >= 2.59.0
+azurerm | >= 3.28.0
 random | >= 3.1.0
 
 ## Inputs
@@ -534,20 +534,24 @@ Name | Description | Type | Default
 `subnets`|For each subnet, create an object that contain fields|object|`{}`
 `subnet_name`|A name of subnets inside virtual network| object |`{}`
 `subnet_address_prefix`|A list of subnets address prefixes inside virtual network|list|`[]`
-`gateway_subnet_address_prefix`|The address prefix to use for the gateway subnet|list|`null`
-`firewall_subnet_address_prefix`|The address prefix to use for the Firewall subnet|list|`[]`
 `delegation`|defines a subnet delegation feature. takes an object as described in the following example|object|`{}`
 `service_endpoints`|service endpoints for the virtual subnet|object|`{}`
 `nsg_inbound_rule`|network security groups settings - a NSG is always created for each subnet|object|`{}`
 `nsg_outbound_rule`|network security groups settings - a NSG is always created for each subnet|object|`{}`
+`gateway_subnet_address_prefix`|The address prefix to use for the gateway subnet|list|`null`
+`firewall_subnet_address_prefix`|The address prefix to use for the Firewall subnet|list|`[]`
+`firewall_service_endpoints`|Service endpoints to add to the firewall subnet|list|`"Microsoft.AzureActiveDirectory", "Microsoft.AzureCosmosDB","Microsoft.EventHub", "Microsoft.KeyVault", "Microsoft.ServiceBus", "Microsoft.Sql", "Microsoft.Storage",`
+`gateway_service_endpoints`|Service endpoints to add to the Gateway subnet|list|`[]`
 `private_dns_zone_name`|The name of the Private DNS Zone. Must be a valid domain name to enable the resource creation|string|`""`
-`log_analytics_workspace_sku`|The SKU of the Log Analytics Workspace. Possible values are `Free`, `PerNode`, `Premium`, `Standard`, `Standalone`, `Unlimited`, and `PerGB2018`|string|`PerGB2018`
-`log_analytics_logs_retention_in_days`|The log analytics workspace data retention in days. Possible values range between `30` and `730`|number|`30`
 `public_ip_names`|Public IPs is a list of IP names that are connected to the firewall|list(string)|["fw-public"]
 `firewall_zones`|A collection of availability zones to spread the Firewall over|list(string)| `null`
 `firewall_application_rules`|List of network rules to apply to firewall|list|`[]`
 `firewall_nat_rules`|List of NAT rules to apply to firewall|list|`[]`
 `firewall_network_rules`|List of network rules to apply to firewall|list|`[]`
+`sku_name`|SKU name of the Firewall. Possible values are `AZFW_Hub` and `AZFW_VNet`|string|`"AZFW_VNet"`
+`sku_tier`|SKU tier of the Firewall. Possible values are `Premium`, `Standard` and `Basic`|string|`"Standard"`
+`log_analytics_workspace_sku`|The SKU of the Log Analytics Workspace. Possible values are `Free`, `PerNode`, `Premium`, `Standard`,`Standalone`, `Unlimited`, and `PerGB2018`|string|`PerGB2018`
+`log_analytics_logs_retention_in_days`|The log analytics workspace data retention in days. Possible values range between `30` and `730`|number|`30`
 `Tags`|A map of tags to add to all resources|map|`{}`
 
 ## Outputs
