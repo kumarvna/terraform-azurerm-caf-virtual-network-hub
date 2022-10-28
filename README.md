@@ -8,7 +8,7 @@ AzureFirewallSubnet and GatewaySubnet will not contain any UDR (User Defined Rou
 
 This is designed to quickly deploy hub and spoke architecture in the azure and further security hardening would be recommend to add appropriate NSG rules to use this for any production workloads.
 
-![hub-spoke-topology](azure-caf-hub-spoke-firewall.png)
+![hub-spoke-topology](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/images/hub-spoke.png)
 
 Source: [Microsoft Azure Hub-Spoke Topology Documentation](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/hub-spoke)
 
